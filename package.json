@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "keypress": "^0.2.1"
+  },
+  "name": "viewterminal",
+  "version": "0.1.0",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "radras",
+  "license": "MIT",
+  "description": "Module for creating simple interfaces in the terminal."
+}
