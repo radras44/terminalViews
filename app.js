@@ -122,14 +122,14 @@ class ActionOption {
     }
 }
 
+function clearLastLine() {
+    process.stdout.write('\x1b[1A'); // Mueve el cursor una línea hacia arriba
+    process.stdout.clearLine();      // Borra la línea actual
+}
 
 function input(question) {
     process.stdin.setRawMode(false);
     process.stdin.resume()
-    function clearLast() {
-        process.stdout.write('\x1b[1A'); // Mueve el cursor una línea hacia arriba
-        process.stdout.clearLine();      // Borra la línea actual
-    }
     return new Promise((resolve) => {
         function listener(ch, key) {
             if (ch) {
@@ -141,7 +141,7 @@ function input(question) {
                 process.stdin.removeAllListeners("keypress")
                 process.stdout.write("\n");
                 resolve(data.trim())
-                clearLast()
+                clearLastLine()
             }
         }
         let data = ""
