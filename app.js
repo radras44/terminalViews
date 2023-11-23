@@ -26,9 +26,9 @@ class App {
         }
         this.view.options.forEach((option, index) => {
             if (index == this.current) {
-                console.log("-", chalk.cyan(option.label));
+                console.log("-", chalk.cyan(option.name));
             } else {
-                console.log("-", option.label);
+                console.log("-", option.name);
             }
         });
         if (this.view.footer) {
@@ -37,6 +37,7 @@ class App {
     }
 
     runSelectListener() {
+        process.stdin.setRawMode(true)
         process.stdin.resume()
         process.stdin.on("keypress", (ch, key) => {
             if (key) {
@@ -92,27 +93,6 @@ class App {
         process.stdin.setRawMode(true);
         keypress(process.stdin);
     }
-
-    input(question) {
-        return new Promise((resolve) => {
-            function listener(ch, key) {
-                if (ch) {
-                    data += ch
-                    process.stdout.write(ch)
-                }
-                if (key && key.name == "return") {
-                    process.stdin.removeAllListeners("keypress")
-                    process.stdin.pause()
-                    resolve(data)
-                }
-            }
-            let data = ""
-            process.stdout.write(question)
-            process.stdin.resume()
-            process.stdin.removeAllListeners("keypress")
-            process.stdin.on("keypress", listener)
-        })
-    }
 }
 
 class View {
@@ -133,18 +113,48 @@ class View {
 }
 
 class ActionOption {
-    constructor({ label, action }) {
-        if (!label || !action) {
-            throw new Error("falta la propiedad 'label' o 'action' en la clase ActionOption")
+    constructor({ name, action }) {
+        if (!name || !action) {
+            throw new Error("falta la propiedad 'name' o 'action' en la clase ActionOption")
         }
-        this.label = label
+        this.name = name
         this.action = action
     }
+}
+
+
+function input(question) {
+    process.stdin.setRawMode(false);
+    process.stdin.resume()
+    function clearLast() {
+        process.stdout.write('\x1b[1A'); // Mueve el cursor una línea hacia arriba
+        process.stdout.clearLine();      // Borra la línea actual
+    }
+    return new Promise((resolve) => {
+        function listener(ch, key) {
+            if (ch) {
+                data += ch
+                process.stdout.write(ch)
+            }
+            if (key && key.name == "return") {
+                process.stdin.pause()
+                process.stdin.removeAllListeners("keypress")
+                process.stdout.write("\n");
+                resolve(data.trim())
+                clearLast()
+            }
+        }
+        let data = ""
+        process.stdout.write(question+": ")
+        process.stdin.removeAllListeners("keypress")
+        process.stdin.on("keypress", listener)
+    })
 }
 
 module.exports = {
     App,
     ActionOption,
-    View
+    View,
+    input
 }
 
