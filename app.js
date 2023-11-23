@@ -36,13 +36,20 @@ class App {
         }
     }
 
+    reload(head){
+        if(head){
+            this.view.head = head
+        }
+        this.show()
+    }
+
     runSelectListener() {
         process.stdin.setRawMode(true)
         process.stdin.resume()
         process.stdin.on("keypress", (ch, key) => {
             if (key) {
                 if (key.ctrl && key.name == "c") {
-                    this.exit()
+                    this.close()
                 }
                 if (key.name.toLowerCase() == "up") {
                     this.up()
@@ -71,7 +78,7 @@ class App {
         this.show()
     }
 
-    exit() {
+    close() {
         process.exit(0)
     }
 
@@ -82,10 +89,13 @@ class App {
         }
     }
 
-    back() {
+    back(head) {
         if (!this.previous) { throw new Error("no existe una vista previa") }
         this.current = 0
         this.view = this.previous
+        if(head){
+            this.view.head = head
+        }
         this.show()
     }
 
