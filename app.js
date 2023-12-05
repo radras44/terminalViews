@@ -21,8 +21,8 @@ class App {
         if(!process.stdin.eventNames().includes("keypress")){
             this.runSelectListener()
         }
-        if (this.view.head) {
-            console.log(this.view.head)
+        if (this.view.header) {
+            console.log(this.view.header)
         }
         this.view.options.forEach((option, index) => {
             if (index == this.current) {
@@ -36,9 +36,12 @@ class App {
         }
     }
 
-    reload(head){
-        if(head){
-            this.view.head = head
+    reload(header,footer){
+        if(header){
+            this.view.header = header
+        }
+        if(footer) {
+            this.view.footer = footer
         }
         this.show()
     }
@@ -89,12 +92,15 @@ class App {
         }
     }
 
-    back(head) {
+    back(header,footer) {
         if (!this.previous) { throw new Error("no existe una vista previa") }
         this.current = 0
         this.view = this.previous
-        if(head){
-            this.view.head = head
+        if(header){
+            this.view.header = header
+        }
+        if(footer) {
+            this.view.footer = footer
         }
         this.show()
     }
@@ -106,11 +112,11 @@ class App {
 }
 
 class View {
-    constructor({ head, options, footer }) {
+    constructor({ header, options, footer }) {
         if (!options) {
             throw new Error("la propiedad options es obligatoria")
         }
-        this.head = head || ""
+        this.header = header || ""
         this.setOptions(options)
         this.footer = footer || ""
     }
@@ -137,7 +143,7 @@ function clearLastLine() {
     process.stdout.clearLine();      // Borra la línea actual
 }
 
-function input(question) {
+function inputAction(question) {
     process.stdin.setRawMode(false);
     process.stdin.resume()
     return new Promise((resolve) => {
@@ -165,6 +171,5 @@ module.exports = {
     App,
     ActionOption,
     View,
-    input
-}
+    inputAction }
 
