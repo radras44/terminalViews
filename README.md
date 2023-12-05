@@ -3,7 +3,7 @@
 
 ## instalacion
 
-````npm install r-terminal-view```
+```npm install r-terminal-view```
 
 ## Uso
 
